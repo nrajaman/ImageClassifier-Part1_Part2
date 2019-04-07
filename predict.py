@@ -84,9 +84,15 @@ def predict(image_path, checkpoint, topk=5, category_names=category_names,gpu=Fa
                           ('fc2', nn.Linear(4096, 102)),
                           ('output', nn.LogSoftmax(dim=1))
                           ]))
-     
+    if torch.cuda.is_available() :
+        model.to('cuda')
+    else:
+        model.to('cpu')
     model.classifier = classifier
-    checkpoint_dict = torch.load(checkpoint)
+    if torch.cuda.is_available() :
+         checkpoint_dict = torch.load(checkpoint)
+    else:
+         checkpoint_dict = torch.load(checkpoint, map_location = lambda storage, loc:storage )
     #arch = checkpoint_dict['arch']
     #arch = 'vgg19'
     #num_labels = len(checkpoint_dict['class_to_idx'])
