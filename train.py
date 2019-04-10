@@ -20,7 +20,7 @@ parser.add_argument('--data_dir', type=str, default='flowers',help='Path to sour
 parser.add_argument('--save_dir', type=str, default='checkpoint.pth',help='Save Checkpoint for Trained Model')
 parser.add_argument('--arch', type=str, default='vgg19',help='Model architecture')
 parser.add_argument('--learning_rate', default=.001,type=float, help='Learning rate')
-parser.add_argument('--input_units', default=25088,type=int, help='Number of input units')
+#parser.add_argument('--input_units', default=25088,type=int, help='Number of input units')
 parser.add_argument('--hidden_units', default=4096,type=int, help='Number of hidden units')
 parser.add_argument('--gpu', action='store_true',default=False,help='Use GPU if available')
 parser.add_argument('--epochs', type=int,default=5, help='Number of epochs')
@@ -32,6 +32,7 @@ if args.arch:
         # Load a pre-trained model
         arch = args.arch
         #model = models.vgg19(pretrained=True)
+        #determine ino
     elif args.arch=='alexnet':
         #model = models.alexnet(pretrained=True)
         arch = args.arch
@@ -56,8 +57,8 @@ else:
 if args.save_dir:
         checkpoint_path = args.save_dir
 
-if args.input_units:
-        input_units = args.input_units
+#if args.input_units:
+#        input_units = args.input_units
 
 train_transforms = transforms.Compose([transforms.RandomRotation(30),
                                        transforms.RandomResizedCrop(224),
@@ -98,8 +99,15 @@ if arch == 'vgg19':
                 model = models.vgg19(pretrained=True)
             else:
                 model = models.vgg19(pretrained=True,map_location='cpu')
+            #Determine input_units
+            print(model)
+            #print(model.classifier[0].in_features)
+            input_units = model.classifier[0].in_features
 elif arch == 'alexnet':
             model = models.alexnet(pretrained=True)
+            print(model)
+            #print(model.classifier[1].in_features)
+            input_units = model.classifier[1].in_features
         #else:
             #model = models.alexnet(pretrained=True,map_location= lambda storage, loc : storage)
         #    model = models.alexnet(pretrained=True)
